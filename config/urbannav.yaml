@@ -9,7 +9,7 @@ front_end:
             0,1,0,
             0,0,1]
   extrin_t: [0,0,0.28]
-  use_inv: 1
+  use_inv: 0
 ieskf:
   cov_gyroscope: 0.1
   cov_acceleration: 0.1

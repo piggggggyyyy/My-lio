@@ -26,7 +26,7 @@ namespace IESKFSlam
         std::shared_ptr<FrontbackPropagate> fbpropagate_ptr;
         LIOZHModel::Ptr lio_zh_model_ptr;
         LIOZHModelINV::Ptr lio_zh_model_inv_ptr;
-        PCLPointCloudPtr filter_point_cloud_ptr;
+        PCLPointCloudPtr filter_point_cloud_ptr, full_point_cloud_ptr;
         VoxelFilter voxel_filter;
         bool imu_inited = false;
         double imu_scale = 1;
@@ -44,6 +44,7 @@ namespace IESKFSlam
         bool track();
         // 点云读取
         const PCLPointCloud &readCurrentPointCloud();
+        const PCLPointCloud &readCurrentFullPointCloud();
         const PCLPointCloud &readCurrentLocalMap();
         bool syncMeasureGroup(MeasureGroup &mg);
         void initState(MeasureGroup &mg);

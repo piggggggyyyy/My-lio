@@ -8,7 +8,7 @@
 #include "wrapper/ros_noetic/lidar_process/avia_process.h"
 #include "wrapper/ros_noetic/lidar_process/velodyne_process.h"
 #include "ieskf_slam/globaldefine.h"
-
+#include "ieskf_slam/CloudWithPose.h"
 namespace ROSNoetic {
     enum LIDAR_TYPE {
         AVIA = 0, VELO = 1
@@ -24,7 +24,7 @@ namespace ROSNoetic {
         ros::Publisher path_pub;
         ros::Publisher local_map_pub;
         std::shared_ptr<CommonLidarProcessInterface> lidar_process_ptr;
-
+        ros::Publisher cloud_pose_pub;
         // cur status
         IESKFSlam::PCLPointCloud curr_cloud;
         Eigen::Quaterniond curr_q;

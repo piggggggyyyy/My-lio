@@ -46,7 +46,7 @@ namespace IESKFSlam
         Eigen::Matrix<double,18 ,12>Fw;
         Fw.setZero();
         Fx.setIdentity();
-        Fx.block<3,3>(0,0) =    so3Exp(-1*imu.gyroscope*dt);
+        Fx.block<3,3>(0,0) =  so3Exp(-1*imu.gyroscope*dt);
 
         Fx.block<3,3>(0,9) = -1*A_T(-imu.gyroscope*dt)*dt;
 
@@ -71,6 +71,7 @@ namespace IESKFSlam
         bool converge =true;
         for (int i = 0; i < iter_times; i++)
         {
+            //std::cout << "迭代次数" << i << std::endl;
             ///. 计算误差状态 J 
             Eigen::Matrix<double,18,1> error_state = getErrorState18(x_k_k,X);
             Eigen::Matrix<double,18,18> J_inv;
@@ -112,6 +113,7 @@ namespace IESKFSlam
             x_k_k.ba = x_k_k.ba+update_x.block<3,1>(12,0);
             x_k_k.gravity = x_k_k.gravity+update_x.block<3,1>(15,0);
             if(converge){
+                
                 break;
             }
         }
@@ -129,7 +131,7 @@ namespace IESKFSlam
             es.block<3,1>(9,0) = s1.bg - s2.bg;
             es.block<3,1>(12,0) = s1.ba - s2.ba;
             es.block<3,1>(15,0) = s1.gravity - s2.gravity;
-            std::cout << es.block<3,1>(15,0) << std::endl;
+            //std::cout << es.block<3,1>(15,0) << std::endl;
             return es;
         }
     const IESKF::State18&IESKF::getX(){

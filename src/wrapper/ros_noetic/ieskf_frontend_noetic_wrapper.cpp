@@ -26,6 +26,7 @@ namespace ROSNoetic
         curr_cloud_pub = nh.advertise<sensor_msgs::PointCloud2>("curr_cloud",100);
         path_pub = nh.advertise<nav_msgs::Path>("path",100);
         local_map_pub = nh.advertise<sensor_msgs::PointCloud2>("local_map",100);
+        cloud_pose_pub = nh.advertise<ieskf_slam::CloudWithPose>("cloud_with_pose", 100);
         run();
         // while(1){
         //     std::cout << "@" << std::endl;
@@ -86,7 +87,16 @@ namespace ROSNoetic
         pcl::toROSMsg(cloud,msg);
         msg.header.frame_id = "map";
         local_map_pub.publish(msg);
+        ieskf_slam::CloudWithPose cloud_with_pose_msg;
 
+        cloud = front_end_ptr->readCurrentFullPointCloud();
+        pcl::toROSMsg(cloud, cloud_with_pose_msg.point_cloud);
+        cloud_with_pose_msg.pose.position = psd.pose.position;
+        cloud_with_pose_msg.pose.orientation.x = X.rotation.x();
+        cloud_with_pose_msg.pose.orientation.y = X.rotation.y();
+        cloud_with_pose_msg.pose.orientation.z = X.rotation.z();
+        cloud_with_pose_msg.pose.orientation.w = X.rotation.w();
+        cloud_pose_pub.publish(cloud_with_pose_msg);
               
     }
 } // namespace ROSNoetic

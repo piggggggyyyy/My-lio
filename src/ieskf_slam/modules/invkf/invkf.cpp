@@ -63,7 +63,7 @@ namespace IESKFSlam{
         Eigen::MatrixXd K;
         Eigen::MatrixXd H;
         Eigen::MatrixXd z;
-
+        //for(int i = 0; i < 10;)
         calc_zh_ptr->calculate(x,z,H);
         Eigen::MatrixXd H_t = H.transpose();
         K = (H_t*H+(P_/0.001).inverse()).inverse()*H_t; //公式18
