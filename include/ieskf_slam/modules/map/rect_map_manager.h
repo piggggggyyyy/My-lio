@@ -4,15 +4,21 @@
 #include "ieskf_slam/type/base_type.h"
 #include "pcl/common/transforms.h"
 #include "ieskf_slam/math/math.h"
-
+#include "ieskf_slam/type/ivox3d/ivox3d.h"
+#include "ieskf_slam/math/geometry.h"
 namespace IESKFSlam {
     class RectMapManager : private ModuleBase {
+
     private:
         PCLPointCloudPtr local_map_ptr;
         KDTreePtr kdtree_ptr;
         float map_side_length_2;
         float map_resolution;
+        // IVoxType::Options ivox_options_;
+        // std::shared_ptr<IVoxType> ivox_ = nullptr; 
     public:
+        IVoxType::Options ivox_options_;
+        std::shared_ptr<IVoxType> ivox_ = nullptr; 
         RectMapManager(const std::string &config_path,
                        const std::string &prefix);
         ~RectMapManager();
@@ -22,5 +28,7 @@ namespace IESKFSlam {
                      const Eigen::Vector3d &pos_t);
         PCLPointCloudConstPtr getLocalMap();
         KDTreeConstPtr readKDtree();
+        IVoxPtr readIvox();
+
     };
 }  // namespace IESKFSlam

@@ -1,14 +1,16 @@
 #pragma once
 #include <Eigen/Dense>
 #include <vector>
+#include "ieskf_slam/type/point.h"
 namespace IESKFSlam
 {
-    template< typename pointTypeT >
-    static bool planarCheck(const std::vector<pointTypeT> & points, Eigen::Vector4d &pabcd, float threhold){
+    //template< typename pointTypeT >
+    static bool planarCheck(const std::vector<Point, Eigen::aligned_allocator<Point>> & points, Eigen::Vector4d &pabcd, float threhold){
         Eigen::Vector3d normal_vector;
         Eigen::MatrixXd A;
         Eigen::VectorXd B;
         int point_num = points.size();
+        
         A.resize(point_num,3);
         B.resize(point_num);
         B.setOnes();
@@ -57,5 +59,11 @@ namespace IESKFSlam
         point.z = ep.z();
         return point;
     }
+    template<typename PointType,typename T>
+    static float calc_dist(const PointType &p1, const PointType &p2) {
+        return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y) + (p1.z - p2.z) * (p1.z - p2.z);
+    }
+
+    static float calc_dist(const Eigen::Vector3f &p1, const Eigen::Vector3f &p2) { return (p1 - p2).squaredNorm(); }
 
 } // namespace IESKFSlam

@@ -4,8 +4,10 @@
 #include "pcl/common/transforms.h"
 
 namespace IESKFSlam {
+    std::vector<std::vector<Point, Eigen::aligned_allocator<Point>>> nearest_points(100) ;
     FrontEnd::FrontEnd(const std::string &config_file_path, const std::string &prefix)
         : ModuleBase(config_file_path, prefix, "Front End Module") {
+        
         float leaf_size;
         readParam("filter_leaf_size", leaf_size, 0.5f);
         voxel_filter.setLeafSize(leaf_size, leaf_size, leaf_size);
@@ -33,7 +35,7 @@ namespace IESKFSlam {
         
         readParam("trajectory_save",trajectory_save,false);
         readParam("trajectory_save_file", trajectory_save_file_name, std::string("result.txt"));
-        std::cout << trajectory_save << std::endl;
+        //std::cout << trajectory_save << std::endl;
         if (trajectory_save) {
             trajectory_save_file.open(RESULT_DIR + trajectory_save_file_name, std::ios::out | std::ios::app);
         }
@@ -48,7 +50,7 @@ namespace IESKFSlam {
             ieskf_ptr = std::make_shared<IESKF>(config_file_path, "ieskf");
             lio_zh_model_ptr = std::make_shared<LIOZHModel>();
             ieskf_ptr->calc_zh_ptr = lio_zh_model_ptr;
-            lio_zh_model_ptr->prepare(map_ptr->readKDtree(), filter_point_cloud_ptr, map_ptr->getLocalMap());
+            lio_zh_model_ptr->prepare(map_ptr->readIvox(), filter_point_cloud_ptr, map_ptr->getLocalMap());
         } else {
             invkf_ptr = std::make_shared<INVKF>(config_file_path, "invkf");
             lio_zh_model_inv_ptr = std::make_shared<LIOZHModelINV>();
@@ -76,9 +78,12 @@ namespace IESKFSlam {
 
         if (syncMeasureGroup(mg)) {
             if (!imu_inited) {
+                initState(mg);
+                fbpropagate_ptr->propagate(mg, ieskf_ptr);
                 map_ptr->reset();
                 map_ptr->addScan(mg.cloud.cloud_ptr, Eigen::Quaterniond::Identity(), Eigen::Vector3d::Zero());
-                initState(mg);
+                
+                
                 return false;
             }
 
@@ -86,6 +91,8 @@ namespace IESKFSlam {
                 fbpropagate_ptr->propagate(mg, ieskf_ptr);
                 voxel_filter.setInputCloud(mg.cloud.cloud_ptr);
                 voxel_filter.filter(*filter_point_cloud_ptr);
+                nearest_points.resize(filter_point_cloud_ptr->size());
+                filter_point_cloud_ptr->resize(filter_point_cloud_ptr->size());
                 ieskf_ptr->update();
                 auto x = ieskf_ptr->getX();
                 if(trajectory_save && trajectory_save_file.is_open()){

@@ -82,10 +82,10 @@ namespace ROSNoetic
         msg.header.frame_id = "map";
         curr_cloud_pub.publish(msg);
 
-        cloud = front_end_ptr->readCurrentLocalMap();
-        pcl::toROSMsg(cloud,msg);
-        msg.header.frame_id = "map";
-        local_map_pub.publish(msg);
+        // cloud = front_end_ptr->readCurrentLocalMap();
+        // pcl::toROSMsg(cloud,msg);
+        // msg.header.frame_id = "map";
+        // local_map_pub.publish(msg);
 
               
     }

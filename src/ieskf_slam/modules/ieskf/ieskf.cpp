@@ -97,7 +97,7 @@ namespace IESKFSlam
             {
                 if (update_x(idx,0)>0.001)
                 {
-                    
+
                     converge = false;
                     break;
                 }

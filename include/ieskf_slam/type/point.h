@@ -14,6 +14,7 @@ namespace IESKFSlam {
         std::int32_t ring;
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     };
+    // using Point = pcl::PointXYZINormal;
     
 }  // namespace IESKFSlam
 POINT_CLOUD_REGISTER_POINT_STRUCT(

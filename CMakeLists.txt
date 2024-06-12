@@ -3,6 +3,7 @@ project(ieskf_slam)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 SET( CMAKE_CXX_FLAGS "-std=c++17 -O3" )
+
 add_compile_options(-std=c++17)
 add_definitions(-DPROJ_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 #从这里传给了global_define.h
@@ -12,9 +13,17 @@ add_definitions(-DPROJ_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
 add_definitions(-DMP_EN)
 add_definitions(-DMP_PROC_NUM=4)
   
+option(WITH_IVOX_NODE_TYPE_PHC "Use PHC instead of default ivox node" OFF)
 
+if (WITH_IVOX_NODE_TYPE_PHC)
+    message("USING_IVOX_NODE_TYPE_PHC")
+    add_definitions(-DIVOX_NODE_TYPE_PHC)
+else ()
+    message("USING_IVOX_NODE_TYPE_DEFAULT")
+endif()
 find_package(OpenMP QUIET)
-set(CMAKE_BUILD_TYPE "Release")
+# set(CMAKE_BUILD_TYPE "Release")
+set(CMAKE_BUILD_TYPE "Debug")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}   ${OpenMP_C_FLAGS}")
 find_package(catkin REQUIRED COMPONENTS
@@ -26,7 +35,8 @@ find_package(PCL REQUIRED)
 # YAML CPP
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(YAML_CPP REQUIRED yaml-cpp)
-
+# find_package(Glog REQUIRED)
+# include_directories(${Glog_INCLUDE_DIRS})
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES ieskf_slam

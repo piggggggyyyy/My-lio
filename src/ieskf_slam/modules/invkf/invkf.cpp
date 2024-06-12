@@ -39,6 +39,7 @@ namespace IESKFSlam{
         setRotation(rotation_pred);
         setVelocity(velocity_pred);
         setPosition(position_pred);
+        //这里需要验证一下dt的处理，因为按照公式，是需要计算exp（A × dt），我用A × dt 近似了，像openvins那些方法，是严格计算的
         A.block(3,0,3,3) = skewSymmetric(gravity) * dt;
         A.block(6,3,3,3) = Eigen::Matrix3d::Identity();
         A.block(0,9,3,3) = rotation * (-1) * dt;
